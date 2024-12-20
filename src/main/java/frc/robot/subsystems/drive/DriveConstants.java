@@ -1,5 +1,7 @@
 package frc.robot.subsystems.drive;
 
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
@@ -82,5 +84,41 @@ public final class DriveConstants {
     public boolean povRightPressed() {
       return controller.povRight().getAsBoolean();
     }
+  }
+
+  // Module Constants
+  public static final LoggedTunableNumber drivekP;
+  public static final LoggedTunableNumber drivekD;
+  public static final LoggedTunableNumber turnkP;
+  public static final LoggedTunableNumber turnkD;
+
+  public static final SimpleMotorFeedforward driveFeedforward;
+  public static final PIDController driveFeedback;
+  public static final PIDController turnFeedback;
+
+  static {
+    // Switch constants based on mode (the physics simulator is treated as a
+    // separate robot with different tuning)
+    switch (Constants.currentMode) {
+      default:
+        driveFeedforward = new SimpleMotorFeedforward(0.1, 0.13);
+        drivekP = new LoggedTunableNumber("Drive/Tunables/drivekP", 0.11);
+        drivekD = new LoggedTunableNumber("Drive/Tunables/drivekD", 0.0);
+        turnkP = new LoggedTunableNumber("Drive/Tunables/turnkP", 0.25);
+        turnkD = new LoggedTunableNumber("Drive/Tunables/turnkD", 0.0);
+        break;
+      case SIM:
+        driveFeedforward = new SimpleMotorFeedforward(0.0, 0.13);
+        drivekP = new LoggedTunableNumber("Drive/SimTunables/drivekP", 0.1);
+        drivekD = new LoggedTunableNumber("Drive/SimTunables/drivekD", 0.0);
+        turnkP = new LoggedTunableNumber("Drive/SimTunables/turnkP", 10);
+        turnkD = new LoggedTunableNumber("Drive/SimTunables/turnkD", 0.0);
+        break;
+    }
+
+    driveFeedback = new PIDController(drivekP.get(), 0.0, drivekD.get());
+    turnFeedback = new PIDController(turnkP.get(), 0.0, turnkD.get());
+
+    turnFeedback.enableContinuousInput(-Math.PI, Math.PI);
   }
 }

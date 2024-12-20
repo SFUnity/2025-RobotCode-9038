@@ -149,6 +149,7 @@ public class Drive extends SubsystemBase {
     thetaController.setTolerance(Units.degreesToRadians(thetaToleranceDeg.get()));
 
     updateConstraints();
+    updateModuleTunables();
   }
 
   public void periodic() {
@@ -157,6 +158,8 @@ public class Drive extends SubsystemBase {
     for (var module : modules) {
       module.periodic();
     }
+
+    updateModuleTunables();
 
     // Set alerts
     gyroDisconnected.set(!gyroInputs.connected);
@@ -318,6 +321,24 @@ public class Drive extends SubsystemBase {
   @AutoLogOutput(key = "Drive/MeasuredSpeeds")
   private ChassisSpeeds getSpeeds() {
     return DriveConstants.kinematics.toChassisSpeeds(getModuleStates());
+  }
+
+  private void updateModuleTunables() {
+    LoggedTunableNumber.ifChanged(
+        hashCode(),
+        () ->
+            DriveConstants.driveFeedback.setPID(
+                DriveConstants.drivekP.get(), 0, DriveConstants.drivekD.get()),
+        DriveConstants.drivekP,
+        DriveConstants.drivekD);
+
+    LoggedTunableNumber.ifChanged(
+        hashCode(),
+        () ->
+            DriveConstants.turnFeedback.setPID(
+                DriveConstants.turnkP.get(), 0, DriveConstants.turnkD.get()),
+        DriveConstants.turnkP,
+        DriveConstants.turnkD);
   }
 
   // Drive Commands

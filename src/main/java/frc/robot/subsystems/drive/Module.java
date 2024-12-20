@@ -13,15 +13,11 @@
 
 package frc.robot.subsystems.drive;
 
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
-import frc.robot.Constants;
 import frc.robot.util.Alert;
-import frc.robot.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.Logger;
 
 public class Module {
@@ -32,15 +28,6 @@ public class Module {
   private final ModuleIO io;
   private final ModuleIOInputsAutoLogged inputs = new ModuleIOInputsAutoLogged();
   private final int index;
-
-  private final SimpleMotorFeedforward driveFeedforward;
-  private final PIDController driveFeedback;
-  private final PIDController turnFeedback;
-
-  private final LoggedTunableNumber drivekP;
-  private final LoggedTunableNumber drivekD;
-  private final LoggedTunableNumber turnkP;
-  private final LoggedTunableNumber turnkD;
 
   private Rotation2d angleSetpoint = null; // Setpoint for closed loop control, null for open loop
   private Double speedSetpoint = null; // Setpoint for closed loop control, null for open loop
@@ -62,38 +49,12 @@ public class Module {
     cancoderDisconnected =
         new Alert(moduleNames[index] + " cancoder disconnected!", Alert.AlertType.WARNING);
 
-    // Switch constants based on mode (the physics simulator is treated as a
-    // separate robot with different tuning)
-    switch (Constants.currentMode) {
-      default:
-        driveFeedforward = new SimpleMotorFeedforward(0.1, 0.13);
-        drivekP = new LoggedTunableNumber("Drive/Tunables/drivekP", 0.11);
-        drivekD = new LoggedTunableNumber("Drive/Tunables/drivekD", 0.0);
-        turnkP = new LoggedTunableNumber("Drive/Tunables/turnkP", 0.25);
-        turnkD = new LoggedTunableNumber("Drive/Tunables/turnkD", 0.0);
-        break;
-      case SIM:
-        driveFeedforward = new SimpleMotorFeedforward(0.0, 0.13);
-        drivekP = new LoggedTunableNumber("Drive/SimTunables/drivekP", 0.1);
-        drivekD = new LoggedTunableNumber("Drive/SimTunables/drivekD", 0.0);
-        turnkP = new LoggedTunableNumber("Drive/SimTunables/turnkP", 10);
-        turnkD = new LoggedTunableNumber("Drive/SimTunables/turnkD", 0.0);
-        break;
-    }
-
-    driveFeedback = new PIDController(drivekP.get(), 0.0, drivekD.get());
-    turnFeedback = new PIDController(turnkP.get(), 0.0, turnkD.get());
-
-    turnFeedback.enableContinuousInput(-Math.PI, Math.PI);
     setBrakeMode(true);
-    updateTunables();
   }
 
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Drive/Module" + Integer.toString(index), inputs);
-
-    updateTunables();
 
     // On first cycle, reset relative turn encoder
     // Wait until absolute angle is nonzero in case it wasn't initialized yet
@@ -110,7 +71,8 @@ public class Module {
     // Run closed loop turn control
     if (angleSetpoint != null) {
       io.setTurnVoltage(
-          turnFeedback.calculate(getAngle().getRadians(), angleSetpoint.getRadians()));
+          DriveConstants.turnFeedback.calculate(
+              getAngle().getRadians(), angleSetpoint.getRadians()));
 
       // Run closed loop drive control
       // Only allowed if closed loop turn control is running
@@ -120,13 +82,15 @@ public class Module {
         // When the error is 90°, the velocity setpoint should be 0. As the wheel turns
         // towards the setpoint, its velocity should increase. This is achieved by
         // taking the component of the velocity in the direction of the setpoint.
-        double adjustSpeedSetpoint = speedSetpoint * Math.cos(turnFeedback.getPositionError());
+        double adjustSpeedSetpoint =
+            speedSetpoint * Math.cos(DriveConstants.turnFeedback.getPositionError());
 
         // Run drive controller
         double velocityRadPerSec = adjustSpeedSetpoint / WHEEL_RADIUS;
         io.setDriveVoltage(
-            driveFeedforward.calculate(velocityRadPerSec)
-                + driveFeedback.calculate(inputs.driveVelocityRadPerSec, velocityRadPerSec));
+            DriveConstants.driveFeedforward.calculate(velocityRadPerSec)
+                + DriveConstants.driveFeedback.calculate(
+                    inputs.driveVelocityRadPerSec, velocityRadPerSec));
       }
     }
   }
@@ -198,13 +162,5 @@ public class Module {
   /** Returns the module state (turn angle and drive velocity). */
   public SwerveModuleState getState() {
     return new SwerveModuleState(getVelocityMetersPerSec(), getAngle());
-  }
-
-  private void updateTunables() {
-    LoggedTunableNumber.ifChanged(
-        hashCode(), () -> driveFeedback.setPID(drivekP.get(), 0, drivekD.get()), drivekP, drivekD);
-
-    LoggedTunableNumber.ifChanged(
-        hashCode(), () -> turnFeedback.setPID(turnkP.get(), 0, turnkD.get()), turnkP, turnkD);
   }
 }
