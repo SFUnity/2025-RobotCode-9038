@@ -221,6 +221,8 @@ public class Drive extends SubsystemBase {
    * @param speeds Speeds in meters/sec
    */
   public void runVelocity(ChassisSpeeds speeds) {
+    Logger.recordOutput("Drive/TargetSpeeds", speeds);
+
     // Calculate module setpoints
     ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(speeds, 0.02);
     SwerveModuleState[] setpointStates = kinematics.toSwerveModuleStates(discreteSpeeds);
@@ -234,8 +236,8 @@ public class Drive extends SubsystemBase {
     }
 
     // Log setpoint states
-    Logger.recordOutput("Odometry/SwerveStates/Setpoints", setpointStates);
-    Logger.recordOutput("Odometry/SwerveStates/SetpointsOptimized", optimizedSetpointStates);
+    Logger.recordOutput("Drive/SwerveStates/Setpoints", setpointStates);
+    Logger.recordOutput("Drive/SwerveStates/SetpointsOptimized", optimizedSetpointStates);
   }
 
   /** Stops the drive. */
