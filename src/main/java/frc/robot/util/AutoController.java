@@ -12,12 +12,12 @@ import org.littletonrobotics.junction.Logger;
 public class AutoController implements BiConsumer<Pose2d, SwerveSample> {
   private final Drive drive;
 
-  private final LoggedTunableNumber xkP = new LoggedTunableNumber("Drive/Choreo/Tunables/xkP");
-  private final LoggedTunableNumber xkD = new LoggedTunableNumber("Drive/Choreo/Tunables/xkD");
-  private final LoggedTunableNumber ykP = new LoggedTunableNumber("Drive/Choreo/Tunables/ykP");
-  private final LoggedTunableNumber ykD = new LoggedTunableNumber("Drive/Choreo/Tunables/ykD");
-  private final LoggedTunableNumber rkP = new LoggedTunableNumber("Drive/Choreo/Tunables/rkP");
-  private final LoggedTunableNumber rkD = new LoggedTunableNumber("Drive/Choreo/Tunables/rkD");
+  private final LoggedTunableNumber xkP = new LoggedTunableNumber("Drive/Choreo/xkP", .5);
+  private final LoggedTunableNumber xkD = new LoggedTunableNumber("Drive/Choreo/xkD", 0);
+  private final LoggedTunableNumber ykP = new LoggedTunableNumber("Drive/Choreo/ykP", .5);
+  private final LoggedTunableNumber ykD = new LoggedTunableNumber("Drive/Choreo/ykD", 0);
+  private final LoggedTunableNumber rkP = new LoggedTunableNumber("Drive/Choreo/rkP", .5);
+  private final LoggedTunableNumber rkD = new LoggedTunableNumber("Drive/Choreo/rkD", 0);
 
   private final PIDController xController = new PIDController(xkP.get(), 0.0, xkD.get());
   private final PIDController yController = new PIDController(ykP.get(), 0.0, ykD.get());
