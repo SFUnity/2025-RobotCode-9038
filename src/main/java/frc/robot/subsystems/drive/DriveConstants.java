@@ -109,7 +109,7 @@ public final class DriveConstants {
         break;
       case SIM:
         driveFeedforward = new SimpleMotorFeedforward(0.0, 0.13);
-        drivekP = new LoggedTunableNumber("Drive/SimTunables/drivekP", 0.1);
+        drivekP = new LoggedTunableNumber("Drive/SimTunables/drivekP", 0.28);
         drivekD = new LoggedTunableNumber("Drive/SimTunables/drivekD", 0.0);
         turnkP = new LoggedTunableNumber("Drive/SimTunables/turnkP", 10);
         turnkD = new LoggedTunableNumber("Drive/SimTunables/turnkD", 0.0);
