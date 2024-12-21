@@ -102,17 +102,17 @@ public final class DriveConstants {
     switch (Constants.currentMode) {
       default:
         driveFeedforward = new SimpleMotorFeedforward(0.1, 0.13);
-        drivekP = new LoggedTunableNumber("Drive/Tunables/drivekP", 0.11);
-        drivekD = new LoggedTunableNumber("Drive/Tunables/drivekD", 0.0);
-        turnkP = new LoggedTunableNumber("Drive/Tunables/turnkP", 0.25);
-        turnkD = new LoggedTunableNumber("Drive/Tunables/turnkD", 0.0);
+        drivekP = new LoggedTunableNumber("Drive/ModuleTunables/drivekP", 0.11);
+        drivekD = new LoggedTunableNumber("Drive/ModuleTunables/drivekD", 0.0);
+        turnkP = new LoggedTunableNumber("Drive/ModuleTunables/turnkP", 0.25);
+        turnkD = new LoggedTunableNumber("Drive/ModuleTunables/turnkD", 0.0);
         break;
       case SIM:
         driveFeedforward = new SimpleMotorFeedforward(0.0, 0.13);
-        drivekP = new LoggedTunableNumber("Drive/SimTunables/drivekP", 0.28);
-        drivekD = new LoggedTunableNumber("Drive/SimTunables/drivekD", 0.0);
-        turnkP = new LoggedTunableNumber("Drive/SimTunables/turnkP", 10);
-        turnkD = new LoggedTunableNumber("Drive/SimTunables/turnkD", 0.0);
+        drivekP = new LoggedTunableNumber("Drive/ModuleTunables/drivekP", 0.28);
+        drivekD = new LoggedTunableNumber("Drive/ModuleTunables/drivekD", 0.0);
+        turnkP = new LoggedTunableNumber("Drive/ModuleTunables/turnkP", 10);
+        turnkD = new LoggedTunableNumber("Drive/ModuleTunables/turnkD", 0.0);
         break;
     }
 
