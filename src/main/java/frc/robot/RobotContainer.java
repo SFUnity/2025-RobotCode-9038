@@ -84,9 +84,9 @@ public class RobotContainer {
   private final AutoFactory autoFactory;
   private final AutoController autoController;
   private final AutoChooser autoChooser;
-  private final LoggedDashboardChooser<Command> sysIdChooser =
-      new LoggedDashboardChooser<Command>("SysId Chooser");
-  private static final boolean doingSysId = false;
+  private final LoggedDashboardChooser<Command> nonChoreoChooser =
+      new LoggedDashboardChooser<Command>("Non-Choreo Chooser");
+  private static final boolean isChoreoAuto = true;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -235,20 +235,23 @@ public class RobotContainer {
         });
 
     if (!DriverStation.isFMSAttached()) {
-      // Set up test routines
+      // Set up test choreo routines
 
-      // SysID routines
-      if (doingSysId) {
+      // SysID & non-choreo routines
+      if (!isChoreoAuto) {
+        nonChoreoChooser.addOption("Module Drive Tuning", drive.tuneModuleDrive());
+        nonChoreoChooser.addOption("Module Turn Tuning", drive.tuneModuleTurn());
+
         // Set up SysId routines
-        sysIdChooser.addOption(
+        nonChoreoChooser.addOption(
             "Drive SysId (Quasistatic Forward)",
             drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-        sysIdChooser.addOption(
+        nonChoreoChooser.addOption(
             "Drive SysId (Quasistatic Reverse)",
             drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-        sysIdChooser.addOption(
+        nonChoreoChooser.addOption(
             "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
-        sysIdChooser.addOption(
+        nonChoreoChooser.addOption(
             "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
       }
     }
@@ -305,6 +308,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return doingSysId ? sysIdChooser.get() : autoChooser.getSelectedAutoRoutine();
+    return isChoreoAuto ? autoChooser.getSelectedAutoRoutine() : nonChoreoChooser.get();
   }
 }
