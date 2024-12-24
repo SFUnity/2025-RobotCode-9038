@@ -111,8 +111,8 @@ public final class DriveConstants {
         driveFeedforward = new SimpleMotorFeedforward(0.0, 0.13);
         drivekP = new LoggedTunableNumber("Drive/ModuleTunables/drivekP", 0.25); // tuned
         drivekD = new LoggedTunableNumber("Drive/ModuleTunables/drivekD", 0.0); // tuned
-        turnkP = new LoggedTunableNumber("Drive/ModuleTunables/turnkP", 10);
-        turnkD = new LoggedTunableNumber("Drive/ModuleTunables/turnkD", 0.0);
+        turnkP = new LoggedTunableNumber("Drive/ModuleTunables/turnkP", 15); // tuned
+        turnkD = new LoggedTunableNumber("Drive/ModuleTunables/turnkD", 0.0); // tuned
         break;
     }
 
