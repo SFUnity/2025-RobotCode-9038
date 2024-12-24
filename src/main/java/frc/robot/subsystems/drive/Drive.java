@@ -60,9 +60,9 @@ public class Drive extends SubsystemBase {
   private static final LoggedTunableNumber thetakD =
       new LoggedTunableNumber("Drive/Commands/Theta/D", 0.0);
   private static final LoggedTunableNumber linearTolerance =
-      new LoggedTunableNumber("Drive/Commands/Linear/controllerTolerance", 0.08);
+      new LoggedTunableNumber("Drive/Commands/Linear/tolerance", 0.08);
   private static final LoggedTunableNumber thetaToleranceDeg =
-      new LoggedTunableNumber("Drive/Commands/Theta/controllerToleranceDeg", 1.0);
+      new LoggedTunableNumber("Drive/Commands/Theta/toleranceDeg", 1.0);
 
   private static final LoggedTunableNumber maxLinearVelocity =
       new LoggedTunableNumber(
