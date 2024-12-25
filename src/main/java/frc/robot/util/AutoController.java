@@ -17,7 +17,7 @@ public class AutoController implements BiConsumer<Pose2d, SwerveSample> {
   private final LoggedTunableNumber xkD = new LoggedTunableNumber("Drive/Choreo/xkD", 0);
   private final LoggedTunableNumber ykP = new LoggedTunableNumber("Drive/Choreo/ykP", 15);
   private final LoggedTunableNumber ykD = new LoggedTunableNumber("Drive/Choreo/ykD", 0);
-  private final LoggedTunableNumber rkP = new LoggedTunableNumber("Drive/Choreo/rkP", 15); 
+  private final LoggedTunableNumber rkP = new LoggedTunableNumber("Drive/Choreo/rkP", 15);
   private final LoggedTunableNumber rkD = new LoggedTunableNumber("Drive/Choreo/rkD", 0);
 
   private final PIDController xController = new PIDController(xkP.get(), 0.0, xkD.get());
