@@ -156,7 +156,7 @@ public class Robot extends LoggedRobot {
 
     // Robot container periodic methods
     robotContainer.checkControllers();
-    robotContainer.updateAutoChooser();
+    robotContainer.autos.updateAutoChooser();
 
     // Check CAN status
     var canStatus = RobotController.getCANStatus();
@@ -186,10 +186,10 @@ public class Robot extends LoggedRobot {
   @Override
   public void disabledPeriodic() {}
 
-  /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
+  /** This autonomous runs the autonomous command selected by your {@link Autos} class. */
   @Override
   public void autonomousInit() {
-    autoCommand = robotContainer.getAutonomousCommand();
+    autoCommand = robotContainer.autos.getAutonomousCommand();
 
     // schedule the autonomous command (example)
     if (autoCommand != null) {
