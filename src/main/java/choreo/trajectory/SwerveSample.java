@@ -190,50 +190,48 @@ public class SwerveSample implements TrajectorySample<SwerveSample> {
   @Override
   public SwerveSample flipped() {
     return switch (AllianceFlipUtil.getFlipper()) {
-      case MIRRORED ->
-          new SwerveSample(
-              this.t,
-              AllianceFlipUtil.flipX(this.x),
-              this.y,
-              Math.PI - this.heading,
-              -this.vx,
-              this.vy,
-              -this.omega,
-              -this.ax,
-              this.ay,
-              -this.alpha,
-              // FL, FR, BL, BR
-              // Mirrored
-              // -FR, -FL, -BR, -BL
-              new double[] {
-                -this.moduleForcesX()[1],
-                -this.moduleForcesX()[0],
-                -this.moduleForcesX()[3],
-                -this.moduleForcesX()[2]
-              },
-              // FL, FR, BL, BR
-              // Mirrored
-              // FR, FL, BR, BL
-              new double[] {
-                this.moduleForcesY()[1],
-                this.moduleForcesY()[0],
-                this.moduleForcesY()[3],
-                this.moduleForcesY()[2]
-              });
-      case ROTATE_AROUND ->
-          new SwerveSample(
-              this.t,
-              AllianceFlipUtil.flipX(this.x),
-              AllianceFlipUtil.flipY(this.y),
-              Math.PI - this.heading,
-              -this.vx,
-              -this.vy,
-              -this.omega,
-              -this.ax,
-              -this.ay,
-              -this.alpha,
-              Arrays.stream(this.moduleForcesX()).map(x -> -x).toArray(),
-              Arrays.stream(this.moduleForcesY()).map(y -> -y).toArray());
+      case MIRRORED -> new SwerveSample(
+          this.t,
+          AllianceFlipUtil.flipX(this.x),
+          this.y,
+          Math.PI - this.heading,
+          -this.vx,
+          this.vy,
+          -this.omega,
+          -this.ax,
+          this.ay,
+          -this.alpha,
+          // FL, FR, BL, BR
+          // Mirrored
+          // -FR, -FL, -BR, -BL
+          new double[] {
+            -this.moduleForcesX()[1],
+            -this.moduleForcesX()[0],
+            -this.moduleForcesX()[3],
+            -this.moduleForcesX()[2]
+          },
+          // FL, FR, BL, BR
+          // Mirrored
+          // FR, FL, BR, BL
+          new double[] {
+            this.moduleForcesY()[1],
+            this.moduleForcesY()[0],
+            this.moduleForcesY()[3],
+            this.moduleForcesY()[2]
+          });
+      case ROTATE_AROUND -> new SwerveSample(
+          this.t,
+          AllianceFlipUtil.flipX(this.x),
+          AllianceFlipUtil.flipY(this.y),
+          Math.PI - this.heading,
+          -this.vx,
+          -this.vy,
+          -this.omega,
+          -this.ax,
+          -this.ay,
+          -this.alpha,
+          Arrays.stream(this.moduleForcesX()).map(x -> -x).toArray(),
+          Arrays.stream(this.moduleForcesY()).map(y -> -y).toArray());
     };
   }
 
