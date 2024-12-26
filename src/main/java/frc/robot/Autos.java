@@ -4,12 +4,11 @@ import choreo.Choreo;
 import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoFactory.AutoBindings;
-import choreo.auto.AutoLoop;
+import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
 import choreo.trajectory.SwerveSample;
 import choreo.trajectory.Trajectory;
 import choreo.util.AllianceFlipUtil;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -21,28 +20,28 @@ import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 public class Autos {
-  private final Drive drive;
+//   private final Drive drive;
   private final PoseManager poseManager;
 
-  private final AutoFactory autoFactory;
-  private final AutoController autoController;
-  private final AutoChooser autoChooser;
+  private final AutoFactory factory;
+  private final AutoController controller;
+  private final AutoChooser chooser;
 
   private final LoggedDashboardChooser<Command> nonChoreoChooser =
       new LoggedDashboardChooser<Command>("Non-Choreo Chooser");
   private static final boolean isChoreoAuto = true;
 
   public Autos(Drive drive, PoseManager poseManager) {
-    this.drive = drive;
+    // this.drive = drive;
     this.poseManager = poseManager;
 
-    autoController = new AutoController(drive);
+    controller = new AutoController(drive);
 
-    autoFactory =
+    factory =
         Choreo.createAutoFactory(
             drive,
             poseManager::getPose,
-            autoController,
+            controller,
             AllianceFlipUtil::shouldFlip,
             new AutoBindings(),
             (Trajectory<SwerveSample> traj, Boolean bool) -> {
@@ -57,80 +56,14 @@ public class Autos {
                   traj.getInitialPose(AllianceFlipUtil.shouldFlip()));
             });
 
-    autoChooser = new AutoChooser(autoFactory, "Auto Chooser Chor");
+    chooser = new AutoChooser(factory, "Auto Chooser Chor");
 
     // Add choreo auto options
-    autoChooser.addAutoRoutine(
-        "circle",
-        (AutoFactory factory) -> {
-          final AutoLoop loop = factory.newLoop("circle");
-          final AutoTrajectory trajectory = factory.trajectory("circle", loop);
+    chooser.addAutoRoutine("circle", this::circle);
 
-          loop.enabled()
-              .onTrue(
-                  Commands.runOnce(
-                          () ->
-                              poseManager.setPose(
-                                  trajectory
-                                      .getInitialPose()
-                                      .orElseGet(
-                                          () -> {
-                                            loop.kill();
-                                            return new Pose2d();
-                                          })))
-                      .andThen(trajectory.cmd())
-                      .withName("circle entry point"));
+    chooser.addAutoRoutine("better circle", this::betterCircle);
 
-          return loop.cmd();
-        });
-
-    autoChooser.addAutoRoutine(
-        "better circle",
-        (AutoFactory factory) -> {
-          final AutoLoop loop = factory.newLoop("better circle");
-          final AutoTrajectory trajectory = factory.trajectory("better circle", loop);
-
-          loop.enabled()
-              .onTrue(
-                  Commands.runOnce(
-                          () ->
-                              poseManager.setPose(
-                                  trajectory
-                                      .getInitialPose()
-                                      .orElseGet(
-                                          () -> {
-                                            loop.kill();
-                                            return new Pose2d();
-                                          })))
-                      .andThen(trajectory.cmd())
-                      .withName("better circle entry point"));
-
-          return loop.cmd();
-        });
-
-    autoChooser.addAutoRoutine(
-        "get a note and shoot it",
-        (AutoFactory factory) -> {
-          final AutoLoop loop = factory.newLoop("get a note and shoot it");
-          final AutoTrajectory trajectory = factory.trajectory("get a note and shoot it", loop);
-
-          loop.enabled()
-              .onTrue(
-                  Commands.runOnce(
-                          () ->
-                              poseManager.setPose(
-                                  trajectory
-                                      .getInitialPose()
-                                      .orElseGet(
-                                          () -> {
-                                            loop.kill();
-                                            return new Pose2d();
-                                          })))
-                      .andThen(trajectory.cmd())
-                      .withName("get a note and shoot it entry point"));
-
-          return loop.cmd();
-        });
+    chooser.addAutoRoutine("get a note and shoot it", this::getNoteAndShoot);
 
     if (!DriverStation.isFMSAttached()) {
       // Set up test choreo routines
@@ -155,8 +88,65 @@ public class Autos {
     }
   }
 
+  private Command resetOdometry(AutoTrajectory traj, AutoRoutine routine) {
+    var optPose = traj.getInitialPose();
+    if (optPose.isEmpty()) {
+      routine.kill();
+      return Commands.print("Killed routine due to lack of starting pose");
+    }
+    return Commands.runOnce(() -> poseManager.setPose(optPose.get())).withName("ResetOdometry");
+  }
+
+  private AutoRoutine getNoteAndShoot(final AutoFactory factory) {
+    final AutoRoutine routine = factory.newRoutine("get a note and shoot it");
+
+    final AutoTrajectory trajectory = factory.trajectory("get a note and shoot it", routine);
+
+    // entry point for the auto
+    routine
+        .enabled()
+        .onTrue(
+            resetOdometry(trajectory, routine)
+                .andThen(trajectory.cmd())
+                .withName("get a note and shoot it entry point"));
+
+    return routine;
+  }
+
+  private AutoRoutine betterCircle(final AutoFactory factory) {
+    final AutoRoutine routine = factory.newRoutine("better circle");
+
+    final AutoTrajectory trajectory = factory.trajectory("better circle", routine);
+
+    // entry point for the auto
+    routine
+        .enabled()
+        .onTrue(
+            resetOdometry(trajectory, routine)
+                .andThen(trajectory.cmd())
+                .withName("better circle entry point"));
+
+    return routine;
+  }
+
+  private AutoRoutine circle(final AutoFactory factory) {
+    final AutoRoutine routine = factory.newRoutine("circle");
+
+    final AutoTrajectory trajectory = factory.trajectory("circle", routine);
+
+    // entry point for the auto
+    routine
+        .enabled()
+        .onTrue(
+            resetOdometry(trajectory, routine)
+                .andThen(trajectory.cmd())
+                .withName("circle entry point"));
+
+    return routine;
+  }
+
   public void updateAutoChooser() {
-    autoChooser.update();
+    chooser.update();
   }
 
   /**
@@ -165,6 +155,6 @@ public class Autos {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return isChoreoAuto ? autoChooser.getSelectedAutoRoutine() : nonChoreoChooser.get();
+    return isChoreoAuto ? chooser.getSelectedAutoRoutine().cmd() : nonChoreoChooser.get();
   }
 }
