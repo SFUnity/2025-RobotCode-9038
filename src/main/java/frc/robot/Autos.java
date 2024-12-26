@@ -60,9 +60,7 @@ public class Autos {
 
     // Add choreo auto options
     chooser.addAutoRoutine("circle", this::circle);
-
     chooser.addAutoRoutine("better circle", this::betterCircle);
-
     chooser.addAutoRoutine("get a note and shoot it", this::getNoteAndShoot);
 
     if (!DriverStation.isFMSAttached()) {
