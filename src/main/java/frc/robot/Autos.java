@@ -22,6 +22,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 public class Autos {
   private final Drive drive;
+  private final PoseManager poseManager;
 
   private final AutoFactory autoFactory;
   private final AutoController autoController;
@@ -33,6 +34,7 @@ public class Autos {
 
   public Autos(Drive drive, PoseManager poseManager) {
     this.drive = drive;
+    this.poseManager = poseManager;
 
     autoController = new AutoController(drive);
 
