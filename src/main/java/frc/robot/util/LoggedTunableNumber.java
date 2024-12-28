@@ -7,7 +7,7 @@
 
 package frc.robot.util;
 
-import frc.robot.Constants;
+import frc.robot.constants.Constants;
 import frc.robot.util.loggedShuffleboardClasses.LoggedShuffleboardNumber;
 import java.util.Arrays;
 import java.util.HashMap;
