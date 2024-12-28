@@ -59,7 +59,7 @@ public class Autos {
     chooser = new AutoChooser(factory, "Auto Chooser Chor");
 
     // Add choreo auto options
-    chooser.addAutoRoutine("better circle", this::betterCircle);
+    chooser.addAutoRoutine("betterCircle", this::betterCircle);
 
     if (!DriverStation.isFMSAttached()) {
       // Set up test choreo routines
