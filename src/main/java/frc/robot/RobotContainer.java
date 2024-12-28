@@ -119,16 +119,4 @@ public class RobotContainer {
 
     // Operator controls for intake
   }
-
-  /** Updates the alerts for disconnected controllers. */
-  public void checkControllers() {
-    driverDisconnected.set(isControllerConnected(driver));
-    operatorDisconnected.set(isControllerConnected(operator));
-  }
-
-  private boolean isControllerConnected(CommandXboxController controller) {
-    return !DriverStation.isJoystickConnected(controller.getHID().getPort())
-        || !DriverStation.getJoystickIsXbox(
-            controller.getHID().getPort()); // Should be an XBox controller
-  }
 }

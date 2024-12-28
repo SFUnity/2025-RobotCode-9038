@@ -190,8 +190,8 @@ public class Robot extends LoggedRobot {
     }
 
     // Robot container periodic methods
-    robotContainer.checkControllers();
-    robotContainer.autos.updateAutoChooser();
+    checkControllers();
+    autos.updateAutoChooser();
 
     // Check CAN status
     var canStatus = RobotController.getCANStatus();
@@ -213,6 +213,18 @@ public class Robot extends LoggedRobot {
     }
   }
 
+  /** Updates the alerts for disconnected controllers. */
+  public void checkControllers() {
+    driverDisconnected.set(isControllerConnected(driver));
+    operatorDisconnected.set(isControllerConnected(operator));
+  }
+
+  private boolean isControllerConnected(CommandXboxController controller) {
+    return !DriverStation.isJoystickConnected(controller.getHID().getPort())
+        || !DriverStation.getJoystickIsXbox(
+            controller.getHID().getPort()); // Should be an XBox controller
+  }
+
   /** This function is called once when the robot is disabled. */
   @Override
   public void disabledInit() {}
@@ -224,7 +236,7 @@ public class Robot extends LoggedRobot {
   /** This autonomous runs the autonomous command selected by your {@link Autos} class. */
   @Override
   public void autonomousInit() {
-    autoCommand = robotContainer.autos.getAutonomousCommand();
+    autoCommand = autos.getAutonomousCommand();
 
     // schedule the autonomous command (example)
     if (autoCommand != null) {
