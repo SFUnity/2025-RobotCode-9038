@@ -59,7 +59,7 @@ public class Autos {
     chooser = new AutoChooser(factory, "Auto Chooser Chor");
 
     // Add choreo auto options
-    chooser.addAutoRoutine("circle", this::circle);
+    chooser.addAutoRoutine("better circle", this::betterCircle);
 
     if (!DriverStation.isFMSAttached()) {
       // Set up test choreo routines
@@ -93,10 +93,10 @@ public class Autos {
     return Commands.runOnce(() -> poseManager.setPose(optPose.get())).withName("ResetOdometry");
   }
 
-  private AutoRoutine circle(final AutoFactory factory) {
-    final AutoRoutine routine = factory.newRoutine("circle");
+  private AutoRoutine betterCircle(final AutoFactory factory) {
+    final AutoRoutine routine = factory.newRoutine("better circle");
 
-    final AutoTrajectory trajectory = factory.trajectory("circle", routine);
+    final AutoTrajectory trajectory = factory.trajectory("better circle", routine);
 
     // entry point for the auto
     routine
@@ -104,7 +104,7 @@ public class Autos {
         .onTrue(
             resetOdometry(trajectory, routine)
                 .andThen(trajectory.cmd())
-                .withName("circle entry point"));
+                .withName("better circle entry point"));
 
     return routine;
   }
