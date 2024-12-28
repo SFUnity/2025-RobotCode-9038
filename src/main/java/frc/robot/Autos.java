@@ -20,7 +20,7 @@ import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 public class Autos {
-//   private final Drive drive;
+  //   private final Drive drive;
   private final PoseManager poseManager;
 
   private final AutoFactory factory;
