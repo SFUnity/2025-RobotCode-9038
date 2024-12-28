@@ -19,11 +19,17 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.constants.BuildConstants;
 import frc.robot.constants.Constants;
+import frc.robot.subsystems.apriltagvision.AprilTagVision;
+import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.drive.DriveConstants.DriveCommandsConfig;
 import frc.robot.subsystems.leds.Leds;
 import frc.robot.util.Alert;
 import frc.robot.util.Alert.AlertType;
+import frc.robot.util.LoggedTunableNumber;
+import frc.robot.util.PoseManager;
 import frc.robot.util.VirtualSubsystem;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
@@ -40,14 +46,16 @@ import org.littletonrobotics.urcl.URCL;
  * project.
  */
 public class Robot extends LoggedRobot {
+  // Autos
+  private Command autoCommand;
+  private double autoStart;
+  private boolean autoMessagePrinted;
+
+  // Alerts
   private static final double canErrorTimeThreshold = 0.5; // Seconds to disable alert
   private static final double lowBatteryVoltage = 11.8;
   private static final double lowBatteryDisabledTime = 1.5;
 
-  private Command autoCommand;
-  private RobotContainer robotContainer;
-  private double autoStart;
-  private boolean autoMessagePrinted;
   private final Timer disabledTimer = new Timer();
   private final Timer canInitialErrorTimer = new Timer();
   private final Timer canErrorTimer = new Timer();
@@ -58,6 +66,31 @@ public class Robot extends LoggedRobot {
       new Alert(
           "Battery voltage is very low, consider turning off the robot or replacing the battery.",
           AlertType.WARNING);
+
+  // Subsystems
+  private final Drive drive;
+  private final AprilTagVision aprilTagVision;
+
+  // Non-subsystems
+  private final PoseManager poseManager = new PoseManager();
+  public final Autos autos;
+
+  // Controllers + driving
+  private final CommandXboxController driver = new CommandXboxController(0);
+  private final CommandXboxController operator = new CommandXboxController(1);
+  private final Alert driverDisconnected =
+      new Alert("Driver controller disconnected (port 0).", AlertType.WARNING);
+  private final Alert operatorDisconnected =
+      new Alert("Operator controller disconnected (port 1).", AlertType.WARNING);
+
+  public boolean slowMode = false;
+  private final LoggedTunableNumber slowDriveMultiplier =
+      new LoggedTunableNumber("Slow Drive Multiplier", 0.6);
+  private final LoggedTunableNumber slowTurnMultiplier =
+      new LoggedTunableNumber("Slow Turn Multiplier", 0.5);
+
+  private final DriveCommandsConfig driveCommandsConfig =
+      new DriveCommandsConfig(driver, () -> slowMode, slowDriveMultiplier, slowTurnMultiplier);
 
   /**
    * This function is run when the robot is first started up and should be used for any
