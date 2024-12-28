@@ -108,6 +108,8 @@ public class Robot extends LoggedRobot {
    */
   @SuppressWarnings("resource")
   public Robot() {
+    super();
+
     Leds.getInstance();
 
     // Record metadata
