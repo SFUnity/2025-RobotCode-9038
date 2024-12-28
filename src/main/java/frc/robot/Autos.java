@@ -94,9 +94,9 @@ public class Autos {
   }
 
   private AutoRoutine betterCircle(final AutoFactory factory) {
-    final AutoRoutine routine = factory.newRoutine("better circle");
+    final AutoRoutine routine = factory.newRoutine("betterCircle");
 
-    final AutoTrajectory trajectory = factory.trajectory("better circle", routine);
+    final AutoTrajectory trajectory = factory.trajectory("betterCircle", routine);
 
     // entry point for the auto
     routine
@@ -104,7 +104,7 @@ public class Autos {
         .onTrue(
             resetOdometry(trajectory, routine)
                 .andThen(trajectory.cmd())
-                .withName("better circle entry point"));
+                .withName("betterCircleEntryPoint"));
 
     return routine;
   }
