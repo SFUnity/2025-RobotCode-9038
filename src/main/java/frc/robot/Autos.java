@@ -60,8 +60,6 @@ public class Autos {
 
     // Add choreo auto options
     chooser.addAutoRoutine("circle", this::circle);
-    chooser.addAutoRoutine("better circle", this::betterCircle);
-    chooser.addAutoRoutine("get a note and shoot it", this::getNoteAndShoot);
 
     if (!DriverStation.isFMSAttached()) {
       // Set up test choreo routines
@@ -93,38 +91,6 @@ public class Autos {
       return Commands.print("Killed routine due to lack of starting pose");
     }
     return Commands.runOnce(() -> poseManager.setPose(optPose.get())).withName("ResetOdometry");
-  }
-
-  private AutoRoutine getNoteAndShoot(final AutoFactory factory) {
-    final AutoRoutine routine = factory.newRoutine("get a note and shoot it");
-
-    final AutoTrajectory trajectory = factory.trajectory("get a note and shoot it", routine);
-
-    // entry point for the auto
-    routine
-        .enabled()
-        .onTrue(
-            resetOdometry(trajectory, routine)
-                .andThen(trajectory.cmd())
-                .withName("get a note and shoot it entry point"));
-
-    return routine;
-  }
-
-  private AutoRoutine betterCircle(final AutoFactory factory) {
-    final AutoRoutine routine = factory.newRoutine("better circle");
-
-    final AutoTrajectory trajectory = factory.trajectory("better circle", routine);
-
-    // entry point for the auto
-    routine
-        .enabled()
-        .onTrue(
-            resetOdometry(trajectory, routine)
-                .andThen(trajectory.cmd())
-                .withName("better circle entry point"));
-
-    return routine;
   }
 
   private AutoRoutine circle(final AutoFactory factory) {
