@@ -17,7 +17,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.apriltagvision.AprilTagVision;
 import frc.robot.subsystems.apriltagvision.AprilTagVisionIO;
@@ -51,8 +50,7 @@ public class RobotContainer {
 
   // Controllers + driving
   private final CommandXboxController driver = new CommandXboxController(0);
-  private final CommandPS5Controller operator =
-      new CommandPS5Controller(1); // TODO will we still be using a PS5?
+  private final CommandXboxController operator = new CommandXboxController(1);
   private final Alert driverDisconnected =
       new Alert("Driver controller disconnected (port 0).", AlertType.WARNING);
   private final Alert operatorDisconnected =
@@ -148,13 +146,13 @@ public class RobotContainer {
 
   /** Updates the alerts for disconnected controllers. */
   public void checkControllers() {
-    driverDisconnected.set(
-        !DriverStation.isJoystickConnected(driver.getHID().getPort())
-            || !DriverStation.getJoystickIsXbox(
-                driver.getHID().getPort())); // Should be an XBox controller
-    operatorDisconnected.set(
-        !DriverStation.isJoystickConnected(operator.getHID().getPort())
-            || DriverStation.getJoystickIsXbox(
-                operator.getHID().getPort())); // Should not be an XBox controller
+    driverDisconnected.set(isControllerConnected(driver));
+    operatorDisconnected.set(isControllerConnected(operator));
+  }
+
+  private boolean isControllerConnected(CommandXboxController controller) {
+    return !DriverStation.isJoystickConnected(controller.getHID().getPort())
+        || !DriverStation.getJoystickIsXbox(
+            controller.getHID().getPort()); // Should be an XBox controller
   }
 }
