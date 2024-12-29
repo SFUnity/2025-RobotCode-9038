@@ -281,6 +281,7 @@ public class Robot extends LoggedRobot {
   private void configureButtonBindings() {
     // Default cmds
     drive.setDefaultCommand(drive.joystickDrive());
+    intake.setDefaultCommand(intake.raiseAndStopCmd());
 
     // Driver controls
     driver.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
@@ -295,7 +296,7 @@ public class Robot extends LoggedRobot {
                 .ignoringDisable(true));
     driver.leftBumper().onTrue(Commands.runOnce(() -> slowMode = !slowMode, drive));
 
-    // Operator controls for intake
+    // Operator controls
   }
 
   /** This function is called periodically during all modes. */
