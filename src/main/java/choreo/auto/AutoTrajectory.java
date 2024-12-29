@@ -184,7 +184,9 @@ public class AutoTrajectory {
         differentialController.accept(currentSample.getPose(), differentialSample);
       }
     } else {
-      TrajectorySample<?> sample = this.trajectory.getFinalSample();
+      TrajectorySample<?> unflippedSample = this.trajectory.getFinalSample();
+      TrajectorySample<?> sample =
+          mirrorTrajectory.getAsBoolean() ? unflippedSample.flipped() : unflippedSample;
 
       if (sample instanceof SwerveSample) {
         BiConsumer<Pose2d, SwerveSample> swerveController =
