@@ -253,7 +253,7 @@ public class Robot extends LoggedRobot {
                 .ignoringDisable(true));
     driver.leftBumper().onTrue(Commands.runOnce(() -> slowMode = !slowMode, drive));
 
-    // Operator controls for intake
+    // Operator controls
   }
 
   /** This function is called periodically during all modes. */
