@@ -149,8 +149,9 @@ public class Autos {
         .enabled()
         .onTrue(
             resetOdometry(SRCtoM5, routine)
-                // TODO add actual shooting here
-                .andThen(Commands.waitSeconds(0.3), SRCtoM5.cmd())
+                .andThen(
+                    shootAtStart(),
+                    Commands.parallel(intake.intakeAndLowerCmd().until(null), SRCtoM5.cmd()))
                 .withName("threeNoteFromSourceEntryPoint"));
 
     // Pick up first note then shoot it
@@ -187,6 +188,17 @@ public class Autos {
         .until(() -> drive.thetaAtGoal())
         .alongWith(shooter.setAutoAimShot().until(shooter::atDesiredAngle))
         .andThen(shooter.feedNoteToFlywheels().onlyWhile(shooter::noteInShooter));
+  }
+
+  private Command shootAtStart() {
+    return shooter
+        .setManualSpeakerShot()
+        .withTimeout(0.3)
+        .andThen(shooter.feedNoteToFlywheels().onlyWhile(shooter::noteInShooter));
+  }
+
+  private Command intakeGP() {
+    return shooter.setIntaking().deadlineWith(intake.intakeAndLowerCmd());
   }
 
   public void updateAutoChooser() {

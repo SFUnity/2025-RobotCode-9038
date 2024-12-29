@@ -306,7 +306,7 @@ public class Robot extends LoggedRobot {
         .square()
         .whileTrue(
             shooter
-                .setIntaking(intake.intakeWorking)
+                .setIntaking()
                 .deadlineWith(intake.intakeCmd(operator.cross()))
                 .withName("setIntaking"));
     operator

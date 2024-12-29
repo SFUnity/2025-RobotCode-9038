@@ -6,7 +6,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 import frc.robot.util.Util;
-import frc.robot.util.loggedShuffleboardClasses.LoggedShuffleboardBoolean;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -98,14 +97,10 @@ public class Flywheels extends SubsystemBase {
     io.stopBoth();
   }
 
-  public Command intake(LoggedShuffleboardBoolean intakeWorking) {
+  public Command intake() {
     return Commands.runEnd(
             () -> {
-              if (intakeWorking.get()) {
-                runVoltsBoth(kDefaultSpeedVoltage / 2);
-              } else {
-                runVoltsBoth(kIntakeSpeedVoltage);
-              }
+              runVoltsBoth(kDefaultSpeedVoltage / 2);
               goal = Goal.NONE;
             },
             () -> goal = lastGoal,

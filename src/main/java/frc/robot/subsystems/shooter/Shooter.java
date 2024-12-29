@@ -86,11 +86,11 @@ public class Shooter extends VirtualSubsystem {
     return pivot.setFeedAngle().alongWith(flywheels.feed()).withName("setFeeding");
   }
 
-  public Command setIntaking(LoggedShuffleboardBoolean intakeWorking) {
+  public Command setIntaking() {
     return feeder
         .intake()
         .until(this::noteInShooter)
-        .deadlineWith(pivot.setIntakeAngle().alongWith(flywheels.intake(intakeWorking)))
+        .deadlineWith(pivot.setIntakeAngle().alongWith(flywheels.intake()))
         .withName("setIntaking");
   }
 

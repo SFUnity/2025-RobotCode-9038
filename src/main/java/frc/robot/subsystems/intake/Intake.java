@@ -132,6 +132,10 @@ public class Intake extends SubsystemBase {
             .withName("intake"));
   }
 
+  public Command intakeAndLowerCmd() {
+    return intakeCmd(new Trigger(() -> true)).withName("intakeAndLower");
+  }
+
   public Command poopCmd() {
     return ifIntakeWorking(
         run(() -> {
