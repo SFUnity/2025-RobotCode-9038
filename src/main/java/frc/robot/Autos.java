@@ -59,7 +59,8 @@ public class Autos {
     chooser = new AutoChooser(factory, "Auto Chooser Chor");
 
     // Add choreo auto options
-    // chooser.addAutoRoutine("name of routine", this::nameOfRoutineMethod);
+    chooser.addAutoRoutine("betterCircle", this::betterCircle);
+    chooser.addAutoRoutine("twoNoteFromSource", this::twoNoteFromSource);
 
     if (!DriverStation.isFMSAttached()) {
       // Set up test choreo routines
@@ -91,6 +92,45 @@ public class Autos {
       return Commands.print("Killed routine due to lack of starting pose");
     }
     return Commands.runOnce(() -> poseManager.setPose(optPose.get())).withName("ResetOdometry");
+  }
+
+  private AutoRoutine betterCircle(final AutoFactory factory) {
+    final AutoRoutine routine = factory.newRoutine("betterCircle");
+
+    final AutoTrajectory trajectory = factory.trajectory("betterCircle", routine);
+
+    // entry point for the auto
+    routine
+        .enabled()
+        .onTrue(
+            resetOdometry(trajectory, routine)
+                .andThen(trajectory.cmd())
+                .withName("betterCircleEntryPoint"));
+
+    return routine;
+  }
+
+  private AutoRoutine twoNoteFromSource(final AutoFactory factory) {
+    final AutoRoutine routine = factory.newRoutine("twoNoteFromSource");
+
+    final AutoTrajectory SRCtoM5 = factory.trajectory("SRCtoM5", routine);
+    final AutoTrajectory M5toS1 = factory.trajectory("M5toS1", routine);
+    final AutoTrajectory S1toM3 = factory.trajectory("S1toM3", routine);
+    final AutoTrajectory M3toS2 = factory.trajectory("M3toS2", routine);
+
+    // entry point for the auto
+    routine
+        .enabled()
+        .onTrue(
+            resetOdometry(SRCtoM5, routine)
+                .andThen(Commands.waitSeconds(0.3), SRCtoM5.cmd())
+                .withName("twoNoteFromSourceEntryPoint"));
+
+    SRCtoM5.done().onTrue(M5toS1.cmd());
+    M5toS1.done().onTrue(drive.run(drive::stop).withTimeout(.3).andThen(S1toM3.cmd()));
+    S1toM3.done().onTrue(M3toS2.cmd());
+
+    return routine;
   }
 
   public void updateAutoChooser() {
