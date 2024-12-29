@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.constants.FieldConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
@@ -94,19 +95,7 @@ public class Autos {
     }
   }
 
-  private Command resetOdometry(AutoTrajectory traj, AutoRoutine routine) {
-    return Commands.runOnce(
-            () -> {
-              var optPose = traj.getInitialPose();
-              if (optPose.isEmpty()) {
-                routine.kill();
-                System.out.println("Killed routine due to lack of starting pose");
-              } else {
-                poseManager.setPose(optPose.get());
-              }
-            })
-        .withName("ResetOdometry");
-  }
+  // Routines
 
   private AutoRoutine betterCircle(final AutoFactory factory) {
     final AutoRoutine routine = factory.newRoutine("betterCircle");
@@ -160,16 +149,44 @@ public class Autos {
         .enabled()
         .onTrue(
             resetOdometry(SRCtoM5, routine)
-            // TODO add actual shooting here
+                // TODO add actual shooting here
                 .andThen(Commands.waitSeconds(0.3), SRCtoM5.cmd())
                 .withName("threeNoteFromSourceEntryPoint"));
 
-    // Pick up first note
+    // Pick up first note then shoot it
     SRCtoM5.done().onTrue(M5toS1.cmd());
-    M5toS1.done().onTrue(drive.run(drive::stop).withTimeout(.3).andThen(S1toM3.cmd()));
+    M5toS1.done().onTrue(autoShoot().andThen(S1toM3.cmd()));
+
+    // Pick up second note then shoot it
     S1toM3.done().onTrue(M3toS2.cmd());
+    M3toS2.done().onTrue(autoShoot());
 
     return routine;
+  }
+
+  // Commands
+
+  private Command resetOdometry(AutoTrajectory traj, AutoRoutine routine) {
+    return Commands.runOnce(
+            () -> {
+              var optPose = traj.getInitialPose();
+              if (optPose.isEmpty()) {
+                routine.kill();
+                System.out.println("Killed routine due to lack of starting pose");
+              } else {
+                poseManager.setPose(optPose.get());
+              }
+            })
+        .withName("ResetOdometry");
+  }
+
+  private Command autoShoot() {
+    return drive
+        .headingDrive(
+            () -> poseManager.getHorizontalAngleTo(FieldConstants.Speaker.centerSpeakerOpening))
+        .until(() -> drive.thetaAtGoal())
+        .alongWith(shooter.setAutoAimShot().until(shooter::atDesiredAngle))
+        .andThen(shooter.feedNoteToFlywheels().onlyWhile(shooter::noteInShooter));
   }
 
   public void updateAutoChooser() {
