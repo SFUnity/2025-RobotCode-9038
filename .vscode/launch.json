@@ -5,8 +5,8 @@
       "type": "java",
       "name": "Constants",
       "request": "launch",
-      "mainClass": "frc.robot.Constants",
-      "projectName": "AdvantageKit_SwerveDriveProject"
+      "mainClass": "frc.robot.constants.Constants",
+      "projectName": "SF-Unity-2025-Robot"
     },
     {
       "type": "wpilib",
