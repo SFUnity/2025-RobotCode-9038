@@ -20,7 +20,7 @@ import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 public class Autos {
-  //   private final Drive drive;
+  private final Drive drive;
   private final PoseManager poseManager;
 
   private final AutoFactory factory;
@@ -32,7 +32,7 @@ public class Autos {
   private static final boolean isChoreoAuto = true;
 
   public Autos(Drive drive, PoseManager poseManager) {
-    // this.drive = drive;
+    this.drive = drive;
     this.poseManager = poseManager;
 
     controller = new AutoController(drive);
@@ -127,7 +127,7 @@ public class Autos {
                 .withName("twoNoteFromSourceEntryPoint"));
 
     SRCtoM5.done().onTrue(M5toS1.cmd());
-    M5toS1.done().onTrue(Commands.waitSeconds(.3).andThen(S1toM3.cmd()));
+    M5toS1.done().onTrue(drive.run(drive::stop).withTimeout(.3).andThen(S1toM3.cmd()));
     S1toM3.done().onTrue(M3toS2.cmd());
 
     return routine;
