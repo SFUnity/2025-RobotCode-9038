@@ -22,7 +22,9 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.BuildConstants;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.apriltagvision.AprilTagVision;
@@ -109,7 +111,7 @@ public class Robot extends LoggedRobot {
 
   // Controllers + driving
   private final CommandXboxController driver = new CommandXboxController(0);
-  private final CommandXboxController operator = new CommandXboxController(1);
+  private final CommandPS5Controller operator = new CommandPS5Controller(1);
   private final Alert driverDisconnected =
       new Alert("Driver controller disconnected (port 0).", AlertType.WARNING);
   private final Alert operatorDisconnected =
@@ -297,6 +299,33 @@ public class Robot extends LoggedRobot {
     driver.leftBumper().onTrue(Commands.runOnce(() -> slowMode = !slowMode, drive));
 
     // Operator controls
+    operator
+        .triangle()
+        .whileTrue(intake.poopCmd().alongWith(shooter.setOuttaking()).withName("poop"));
+    operator
+        .square()
+        .whileTrue(
+            shooter
+                .setIntaking(intake.intakeWorking)
+                .deadlineWith(intake.intakeCmd(operator.cross()))
+                .withName("setIntaking"));
+    operator
+        .circle()
+        .whileTrue(
+            intake
+                .intakeCmd(new Trigger(() -> false))
+                .alongWith(shooter.feedNoteToFlywheels())
+                .withName("shootNote"));
+
+    operator.povUp().onTrue(shooter.stopFlywheels());
+    operator
+        .povDown()
+        .onTrue(Commands.runOnce(() -> shooter.setSimNoteInShooter(!shooter.noteInShooter())));
+
+    operator.L1().onTrue(shooter.setAmpShot());
+    operator.R1().onTrue(shooter.setAutoAimShot());
+    operator.L2().onTrue(shooter.setFeeding());
+    operator.R2().onTrue(shooter.setManualSpeakerShot());
   }
 
   /** This function is called periodically during all modes. */
@@ -323,7 +352,7 @@ public class Robot extends LoggedRobot {
 
     // Check controllers
     driverDisconnected.set(isControllerConnected(driver));
-    operatorDisconnected.set(isControllerConnected(operator));
+    // operatorDisconnected.set(isControllerConnected(operator));
 
     // Update AutoChooser
     autos.updateAutoChooser();
