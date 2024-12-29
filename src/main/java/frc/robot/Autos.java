@@ -87,12 +87,17 @@ public class Autos {
   }
 
   private Command resetOdometry(AutoTrajectory traj, AutoRoutine routine) {
-    var optPose = traj.getInitialPose();
-    if (optPose.isEmpty()) {
-      routine.kill();
-      return Commands.print("Killed routine due to lack of starting pose");
-    }
-    return Commands.runOnce(() -> poseManager.setPose(optPose.get())).withName("ResetOdometry");
+    return Commands.runOnce(
+            () -> {
+              var optPose = traj.getInitialPose();
+              if (optPose.isEmpty()) {
+                routine.kill();
+                System.out.println("Killed routine due to lack of starting pose");
+              } else {
+                poseManager.setPose(optPose.get());
+              }
+            })
+        .withName("ResetOdometry");
   }
 
   private AutoRoutine betterCircle(final AutoFactory factory) {
