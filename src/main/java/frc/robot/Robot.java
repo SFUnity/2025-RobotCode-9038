@@ -234,6 +234,7 @@ public class Robot extends LoggedRobot {
     }
   }
 
+  // Consider moving to its own file if/when it gets big
   /** Use this method to define your button->command mappings. */
   private void configureButtonBindings() {
     // Default cmds
