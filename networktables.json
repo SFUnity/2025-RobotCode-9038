@@ -1,1 +1,18 @@
-[]
+[
+  {
+    "name": "/Shuffleboard/Drivers/Feeding Angle",
+    "type": "double",
+    "value": -5.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Shuffleboard/Drivers/Angle Offset",
+    "type": "double",
+    "value": -44.0,
+    "properties": {
+      "persistent": true
+    }
+  }
+]
