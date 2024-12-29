@@ -6,7 +6,7 @@
       "name": "Constants",
       "request": "launch",
       "mainClass": "frc.robot.constants.Constants",
-      "projectName": "SF-Unity-2025-Robot"
+      "projectName": "SFUnity-2025-Base"
     },
     {
       "type": "wpilib",
