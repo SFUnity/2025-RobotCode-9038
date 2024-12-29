@@ -11,6 +11,7 @@ import choreo.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.constants.FieldConstants;
 import frc.robot.subsystems.drive.Drive;
@@ -162,16 +163,15 @@ public class Autos {
         .enabled()
         .onTrue(
             resetOdometry(SRCtoM5, routine)
-                .andThen(
-                    shootAtStart(),
-                    Commands.parallel(intakeGP(), SRCtoM5.cmd()))
+                .andThen(shootAtStart(), Commands.parallel(intakeGP(), SRCtoM5.cmd()))
                 .withName("threeNoteFromSourceEntryPoint"));
 
     // Pick up first note then shoot it
     SRCtoM5.done().onTrue(M5toS1.cmd());
-    M5toS1.done().onTrue(autoShoot().andThen(S1toM3.cmd()));
+    M5toS1.done().onTrue(autoShoot().andThen(new ScheduleCommand(S1toM3.cmd())));
 
     // Pick up second note then shoot it
+    S1toM3.active().onTrue(intakeGP());
     S1toM3.done().onTrue(M3toS2.cmd());
     M3toS2.done().onTrue(autoShoot());
 
