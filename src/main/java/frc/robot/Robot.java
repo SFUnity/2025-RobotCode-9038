@@ -222,6 +222,8 @@ public class Robot extends LoggedRobot {
     }
 
     DriverStation.silenceJoystickConnectionWarning(true);
+
+    // For tuning visualizations
     // Logger.recordOutput("ZeroedPose2d", new Pose2d());
     // Logger.recordOutput("ZeroedPose3d", new Pose3d());
 
