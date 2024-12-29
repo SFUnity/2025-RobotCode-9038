@@ -95,6 +95,19 @@ public class Autos {
     }
   }
 
+  public void updateAutoChooser() {
+    chooser.update();
+  }
+
+  /**
+   * Use this to pass the autonomous command to the main {@link Robot} class.
+   *
+   * @return the command to run in autonomous
+   */
+  public Command getAutonomousCommand() {
+    return isChoreoAuto ? chooser.getSelectedAutoRoutine().cmd() : nonChoreoChooser.get();
+  }
+
   // Routines
 
   private AutoRoutine betterCircle(final AutoFactory factory) {
@@ -151,7 +164,7 @@ public class Autos {
             resetOdometry(SRCtoM5, routine)
                 .andThen(
                     shootAtStart(),
-                    Commands.parallel(intake.intakeAndLowerCmd().until(null), SRCtoM5.cmd()))
+                    Commands.parallel(intakeGP(), SRCtoM5.cmd()))
                 .withName("threeNoteFromSourceEntryPoint"));
 
     // Pick up first note then shoot it
@@ -199,18 +212,5 @@ public class Autos {
 
   private Command intakeGP() {
     return shooter.setIntaking().deadlineWith(intake.intakeAndLowerCmd());
-  }
-
-  public void updateAutoChooser() {
-    chooser.update();
-  }
-
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
-  public Command getAutonomousCommand() {
-    return isChoreoAuto ? chooser.getSelectedAutoRoutine().cmd() : nonChoreoChooser.get();
   }
 }
