@@ -60,8 +60,8 @@ public class Autos {
 
     // Add choreo auto options
     chooser.addAutoRoutine("betterCircle", this::betterCircle);
-    chooser.addAutoRoutine("twoNoteFromSource", this::twoNoteFromSource);
-    chooser.addAutoRoutine("twoNoteFromSourceDriveOnly", this::twoNoteFromSourceDriveOnly);
+    chooser.addAutoRoutine("threeNoteFromSource", this::threeNoteFromSource);
+    chooser.addAutoRoutine("threeNoteFromSourceDriveOnly", this::threeNoteFromSourceDriveOnly);
 
     if (!DriverStation.isFMSAttached()) {
       // Set up test choreo routines
@@ -116,8 +116,8 @@ public class Autos {
     return routine;
   }
 
-  private AutoRoutine twoNoteFromSourceDriveOnly(final AutoFactory factory) {
-    final AutoRoutine routine = factory.newRoutine("twoNoteFromSourceDriveOnly");
+  private AutoRoutine threeNoteFromSourceDriveOnly(final AutoFactory factory) {
+    final AutoRoutine routine = factory.newRoutine("threeNoteFromSourceDriveOnly");
 
     final AutoTrajectory SRCtoM5 = factory.trajectory("SRCtoM5", routine);
     final AutoTrajectory M5toS1 = factory.trajectory("M5toS1", routine);
@@ -130,7 +130,7 @@ public class Autos {
         .onTrue(
             resetOdometry(SRCtoM5, routine)
                 .andThen(Commands.waitSeconds(0.3), SRCtoM5.cmd())
-                .withName("twoNoteFromSourceDriveOnlyEntryPoint"));
+                .withName("threeNoteFromSourceDriveOnlyEntryPoint"));
 
     SRCtoM5.done().onTrue(M5toS1.cmd());
     M5toS1.done().onTrue(drive.run(drive::stop).withTimeout(.3).andThen(S1toM3.cmd()));
@@ -139,8 +139,8 @@ public class Autos {
     return routine;
   }
 
-  private AutoRoutine twoNoteFromSource(final AutoFactory factory) {
-    final AutoRoutine routine = factory.newRoutine("twoNoteFromSource");
+  private AutoRoutine threeNoteFromSource(final AutoFactory factory) {
+    final AutoRoutine routine = factory.newRoutine("threeNoteFromSource");
 
     final AutoTrajectory SRCtoM5 = factory.trajectory("SRCtoM5", routine);
     final AutoTrajectory M5toS1 = factory.trajectory("M5toS1", routine);
@@ -152,9 +152,11 @@ public class Autos {
         .enabled()
         .onTrue(
             resetOdometry(SRCtoM5, routine)
+            // TODO add actual shooting here
                 .andThen(Commands.waitSeconds(0.3), SRCtoM5.cmd())
-                .withName("twoNoteFromSourceEntryPoint"));
+                .withName("threeNoteFromSourceEntryPoint"));
 
+    // Pick up first note
     SRCtoM5.done().onTrue(M5toS1.cmd());
     M5toS1.done().onTrue(drive.run(drive::stop).withTimeout(.3).andThen(S1toM3.cmd()));
     S1toM3.done().onTrue(M3toS2.cmd());
