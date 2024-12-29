@@ -14,6 +14,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.util.AutoController;
 import frc.robot.util.PoseManager;
 import org.littletonrobotics.junction.Logger;
@@ -21,6 +23,9 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 public class Autos {
   private final Drive drive;
+  private final Intake intake;
+  private final Shooter shooter;
+
   private final PoseManager poseManager;
 
   private final AutoFactory factory;
@@ -31,8 +36,11 @@ public class Autos {
       new LoggedDashboardChooser<Command>("Non-Choreo Chooser");
   private static final boolean isChoreoAuto = true;
 
-  public Autos(Drive drive, PoseManager poseManager) {
+  public Autos(Drive drive, Intake intake, Shooter shooter, PoseManager poseManager) {
     this.drive = drive;
+    this.intake = intake;
+    this.shooter = shooter;
+
     this.poseManager = poseManager;
 
     controller = new AutoController(drive);
