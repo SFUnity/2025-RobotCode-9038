@@ -35,7 +35,27 @@ import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOMixed;
 import frc.robot.subsystems.drive.ModuleIOSim;
+import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.intake.IntakeIO;
+import frc.robot.subsystems.intake.IntakeIOSim;
+import frc.robot.subsystems.intake.IntakeIOSparkMax;
 import frc.robot.subsystems.leds.Leds;
+import frc.robot.subsystems.shooter.BeamBreakIO;
+import frc.robot.subsystems.shooter.BeamBreakIORev;
+import frc.robot.subsystems.shooter.BeamBreakIOSim;
+import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.feeder.Feeder;
+import frc.robot.subsystems.shooter.feeder.FeederIO;
+import frc.robot.subsystems.shooter.feeder.FeederIOSim;
+import frc.robot.subsystems.shooter.feeder.FeederIOSparkMax;
+import frc.robot.subsystems.shooter.flywheels.Flywheels;
+import frc.robot.subsystems.shooter.flywheels.FlywheelsIO;
+import frc.robot.subsystems.shooter.flywheels.FlywheelsIOSim;
+import frc.robot.subsystems.shooter.flywheels.FlywheelsIOSparkMax;
+import frc.robot.subsystems.shooter.pivot.Pivot;
+import frc.robot.subsystems.shooter.pivot.PivotIO;
+import frc.robot.subsystems.shooter.pivot.PivotIOSim;
+import frc.robot.subsystems.shooter.pivot.PivotIOSparkMax;
 import frc.robot.util.Alert;
 import frc.robot.util.Alert.AlertType;
 import frc.robot.util.LoggedTunableNumber;
@@ -80,6 +100,8 @@ public class Robot extends LoggedRobot {
   // Subsystems
   private final Drive drive;
   private final AprilTagVision aprilTagVision;
+  private final Intake intake;
+  private final Shooter shooter;
 
   // Non-subsystems
   private final PoseManager poseManager = new PoseManager();
@@ -180,6 +202,13 @@ public class Robot extends LoggedRobot {
                 driveCommandsConfig);
         aprilTagVision =
             new AprilTagVision(new AprilTagVisionIOLimelight("limelight"), poseManager);
+        intake = new Intake(new IntakeIOSparkMax());
+        shooter =
+            new Shooter(
+                new Flywheels(new FlywheelsIOSparkMax()),
+                new Pivot(new PivotIOSparkMax(), poseManager),
+                new BeamBreakIORev(),
+                new Feeder(new FeederIOSparkMax()));
         break;
 
       case SIM:
@@ -194,6 +223,13 @@ public class Robot extends LoggedRobot {
                 poseManager,
                 driveCommandsConfig);
         aprilTagVision = new AprilTagVision(new AprilTagVisionIO() {}, poseManager);
+        intake = new Intake(new IntakeIOSim());
+        shooter =
+            new Shooter(
+                new Flywheels(new FlywheelsIOSim()),
+                new Pivot(new PivotIOSim(), poseManager),
+                new BeamBreakIOSim(),
+                new Feeder(new FeederIOSim()));
         break;
 
       default:
@@ -208,6 +244,13 @@ public class Robot extends LoggedRobot {
                 poseManager,
                 driveCommandsConfig);
         aprilTagVision = new AprilTagVision(new AprilTagVisionIO() {}, poseManager);
+        intake = new Intake(new IntakeIO() {});
+        shooter =
+            new Shooter(
+                new Flywheels(new FlywheelsIO() {}),
+                new Pivot(new PivotIO() {}, poseManager),
+                new BeamBreakIO() {},
+                new Feeder(new FeederIO() {}));
         break;
     }
 
