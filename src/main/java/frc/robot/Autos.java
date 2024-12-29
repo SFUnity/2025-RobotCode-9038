@@ -84,6 +84,24 @@ public class Autos {
     }
   }
 
+  public void updateAutoChooser() {
+    chooser.update();
+  }
+
+  /**
+   * Use this to pass the autonomous command to the main {@link Robot} class.
+   *
+   * @return the command to run in autonomous
+   */
+  public Command getAutonomousCommand() {
+    return isChoreoAuto ? chooser.getSelectedAutoRoutine().cmd() : nonChoreoChooser.get();
+  }
+
+  // Routines
+
+
+  // Commands
+
   private Command resetOdometry(AutoTrajectory traj, AutoRoutine routine) {
     return Commands.runOnce(
             () -> {
@@ -96,18 +114,5 @@ public class Autos {
               }
             })
         .withName("ResetOdometry");
-  }
-
-  public void updateAutoChooser() {
-    chooser.update();
-  }
-
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
-  public Command getAutonomousCommand() {
-    return isChoreoAuto ? chooser.getSelectedAutoRoutine().cmd() : nonChoreoChooser.get();
   }
 }
