@@ -84,7 +84,7 @@ public class Robot extends LoggedRobot {
 
   // Non-subsystems
   private final PoseManager poseManager = new PoseManager();
-  public final Autos autos;
+  private final Autos autos;
 
   // Controllers + driving
   private final CommandXboxController driver = new CommandXboxController(0);
