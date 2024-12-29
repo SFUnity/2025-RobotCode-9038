@@ -13,6 +13,14 @@
 
 package frc.robot;
 
+import org.littletonrobotics.junction.LogFileUtil;
+import org.littletonrobotics.junction.LoggedRobot;
+import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.NT4Publisher;
+import org.littletonrobotics.junction.wpilog.WPILOGReader;
+import org.littletonrobotics.junction.wpilog.WPILOGWriter;
+import org.littletonrobotics.urcl.URCL;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.net.PortForwarder;
@@ -41,13 +49,6 @@ import frc.robot.util.Alert.AlertType;
 import frc.robot.util.LoggedTunableNumber;
 import frc.robot.util.PoseManager;
 import frc.robot.util.VirtualSubsystem;
-import org.littletonrobotics.junction.LogFileUtil;
-import org.littletonrobotics.junction.LoggedRobot;
-import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.networktables.NT4Publisher;
-import org.littletonrobotics.junction.wpilog.WPILOGReader;
-import org.littletonrobotics.junction.wpilog.WPILOGWriter;
-import org.littletonrobotics.urcl.URCL;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -276,8 +277,11 @@ public class Robot extends LoggedRobot {
       }
     }
 
-    // Robot container periodic methods
-    checkControllers();
+    // Check controllers
+    driverDisconnected.set(isControllerConnected(driver));
+    operatorDisconnected.set(isControllerConnected(operator));
+
+    // Update AutoChooser
     autos.updateAutoChooser();
 
     // Check CAN status
@@ -298,12 +302,6 @@ public class Robot extends LoggedRobot {
       lowBatteryAlert.set(true);
       Leds.getInstance().lowBatteryAlert = true;
     }
-  }
-
-  /** Updates the alerts for disconnected controllers. */
-  public void checkControllers() {
-    driverDisconnected.set(isControllerConnected(driver));
-    operatorDisconnected.set(isControllerConnected(operator));
   }
 
   private boolean isControllerConnected(CommandXboxController controller) {
