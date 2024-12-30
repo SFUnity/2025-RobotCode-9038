@@ -15,6 +15,7 @@ package frc.robot.subsystems.drive;
 
 import static edu.wpi.first.units.Units.*;
 
+import choreo.util.AllianceFlipUtil;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -374,7 +375,9 @@ public class Drive extends SubsystemBase {
                   linearVelocity.getX(),
                   linearVelocity.getY(),
                   omega,
-                  AllianceFlipUtil6328.apply(poseManager.getRotation())));
+                  AllianceFlipUtil.shouldFlip()
+                      ? poseManager.getRotation().plus(new Rotation2d(Math.PI))
+                      : poseManager.getRotation()));
         })
         .withName("Joystick Drive");
   }
@@ -397,7 +400,9 @@ public class Drive extends SubsystemBase {
                   linearVelocity.getX(),
                   linearVelocity.getY(),
                   getAngularVelocityFromProfiledPID(goalHeading.get().getRadians()),
-                  AllianceFlipUtil6328.apply(poseManager.getRotation())));
+                  AllianceFlipUtil.shouldFlip()
+                      ? poseManager.getRotation().plus(new Rotation2d(Math.PI))
+                      : poseManager.getRotation()));
 
           Leds.getInstance().alignedWithTarget = thetaAtGoal();
         })
