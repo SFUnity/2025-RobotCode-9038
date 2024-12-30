@@ -99,7 +99,6 @@ public class Autos {
 
   // Routines
 
-
   // Commands
 
   private Command resetOdometry(AutoTrajectory traj, AutoRoutine routine) {
