@@ -200,17 +200,19 @@ public class Autos {
             () -> poseManager.getHorizontalAngleTo(FieldConstants.Speaker.centerSpeakerOpening))
         .until(() -> drive.thetaAtGoal())
         .alongWith(shooter.setAutoAimShot().until(shooter::atDesiredAngle))
-        .andThen(shooter.feedNoteToFlywheels().onlyWhile(shooter::noteInShooter));
+        .andThen(shooter.feedNoteToFlywheels().onlyWhile(shooter::noteInShooter))
+        .withName("autoShoot");
   }
 
   private Command shootAtStart() {
     return shooter
         .setManualSpeakerShot()
         .withTimeout(0.3)
-        .andThen(shooter.feedNoteToFlywheels().onlyWhile(shooter::noteInShooter));
+        .andThen(shooter.feedNoteToFlywheels().onlyWhile(shooter::noteInShooter))
+        .withName("shootAtStart");
   }
 
   private Command intakeGP() {
-    return shooter.setIntaking().deadlineWith(intake.intakeAndLowerCmd());
+    return shooter.setIntaking().deadlineWith(intake.intakeAndLowerCmd()).withName("intakeGP");
   }
 }
