@@ -33,6 +33,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.constants.FieldConstants;
 import frc.robot.subsystems.drive.DriveConstants.DriveCommandsConfig;
 import frc.robot.subsystems.leds.Leds;
 import frc.robot.util.Alert;
@@ -593,6 +594,14 @@ public class Drive extends SubsystemBase {
                 DriveConstants.turnkP.get(), 0, DriveConstants.turnkD.get()),
         DriveConstants.turnkP,
         DriveConstants.turnkD);
+  }
+
+  public Command aimAtSpeaker() {
+    return headingDrive(
+        () ->
+            poseManager.getHorizontalAngleTo(
+                AllianceFlipUtil6328.apply(
+                    FieldConstants.Speaker.centerSpeakerOpening)));
   }
 
   // Tuning Commands

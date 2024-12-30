@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.constants.FieldConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
@@ -196,9 +195,7 @@ public class Autos {
 
   private Command autoShoot() {
     return drive
-        .headingDrive(
-            () -> poseManager.getHorizontalAngleTo(FieldConstants.Speaker.centerSpeakerOpening))
-        .until(() -> drive.thetaAtGoal())
+        .aimAtSpeaker().until(drive::thetaAtGoal)
         .alongWith(shooter.setAutoAimShot().until(shooter::atDesiredAngle))
         .andThen(shooter.feedNoteToFlywheels().onlyWhile(shooter::noteInShooter))
         .withName("autoShoot");

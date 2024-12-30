@@ -297,6 +297,7 @@ public class Robot extends LoggedRobot {
                     drive)
                 .ignoringDisable(true));
     driver.leftBumper().onTrue(Commands.runOnce(() -> slowMode = !slowMode, drive));
+    driver.b().whileTrue(drive.aimAtSpeaker());
 
     // Operator controls
     operator
