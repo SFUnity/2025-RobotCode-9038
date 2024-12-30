@@ -408,7 +408,11 @@ public class Drive extends SubsystemBase {
             () -> {
               resetThetaController();
             })
-        .finallyDo(() -> Leds.getInstance().alignedWithTarget = false)
+        .finallyDo(
+            () -> {
+              stop();
+              Leds.getInstance().alignedWithTarget = false;
+            })
         .withName("Heading Drive");
   }
 
@@ -456,7 +460,11 @@ public class Drive extends SubsystemBase {
             () -> {
               resetControllers(goalPose.get());
             })
-        .finallyDo(() -> Leds.getInstance().alignedWithTarget = false)
+        .finallyDo(
+            () -> {
+              stop();
+              Leds.getInstance().alignedWithTarget = false;
+            })
         .withName("Full Auto Drive");
   }
 
