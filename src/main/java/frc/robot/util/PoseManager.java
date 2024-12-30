@@ -68,7 +68,7 @@ public class PoseManager {
 
   public Rotation2d getHorizontalAngleTo(Translation2d translation) {
     Translation2d currentTranslation = getPose().getTranslation();
-    Rotation2d theta = currentTranslation.minus(translation).getAngle();
+    Rotation2d theta = translation.minus(currentTranslation).getAngle();
     return theta;
   }
 
