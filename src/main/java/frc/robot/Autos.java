@@ -195,7 +195,8 @@ public class Autos {
 
   private Command autoShoot() {
     return drive
-        .aimAtSpeaker().until(drive::thetaAtGoal)
+        .aimAtSpeaker()
+        .until(drive::thetaAtGoal)
         .alongWith(shooter.setAutoAimShot().until(shooter::atDesiredAngle))
         .andThen(shooter.feedNoteToFlywheels().onlyWhile(shooter::noteInShooter))
         .withName("autoShoot");

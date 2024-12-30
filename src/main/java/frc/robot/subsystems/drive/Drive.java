@@ -605,8 +605,7 @@ public class Drive extends SubsystemBase {
     return headingDrive(
         () ->
             poseManager.getHorizontalAngleTo(
-                AllianceFlipUtil6328.apply(
-                    FieldConstants.Speaker.centerSpeakerOpening)));
+                AllianceFlipUtil6328.apply(FieldConstants.Speaker.centerSpeakerOpening)));
   }
 
   // Tuning Commands
